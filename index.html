@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HireSmart Prototype</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Manrope:wght@400;500;600&display=swap">
+<style>
+/* Layout: sticky tab bar over four tool panels (Careers, Apply, Ask HR, Dashboard); teal on ink-blue neutrals, amber only for hand-over warnings */
+:root{--bg:#f4f7f8;--surface:#fff;--fg:#14232b;--muted:#5a6b74;--line:#d9e2e6;--accent:#0b7a75;--accent-fg:#fff;--soft:#e2f2f1;--warn:#b45309;--warn-bg:#fdf0dc;--good:#13795b;--bad:#b42318;
+--fd:'Sora',system-ui,sans-serif;--fb:'Manrope',system-ui,sans-serif}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a20;--surface:#15262e;--fg:#e6eef1;--muted:#93a6af;--line:#28404b;--accent:#4fd1c5;--accent-fg:#06201e;--soft:#12363a;--warn:#f5b45c;--warn-bg:#3a2a12;--good:#4cc9a0;--bad:#ff8a7a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1a20;--surface:#15262e;--fg:#e6eef1;--muted:#93a6af;--line:#28404b;--accent:#4fd1c5;--accent-fg:#06201e;--soft:#12363a;--warn:#f5b45c;--warn-bg:#3a2a12;--good:#4cc9a0;--bad:#ff8a7a;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--fb);font-size:15px;line-height:1.55}
+*{box-sizing:border-box}
+.wrap{max-width:980px;margin:0 auto;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+header{background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);z-index:9}
+.bar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-block:10px}
+.logo{font-family:var(--fd);font-weight:700;font-size:18px}.logo b{color:var(--accent)}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{font:inherit;font-weight:600;font-size:14px;background:none;border:0;color:var(--muted);padding:8px 12px;border-radius:6px;cursor:pointer}
+nav button[aria-selected=true]{background:var(--soft);color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+main{padding-block:24px 56px}
+h1,h2,h3{font-family:var(--fd);line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:clamp(24px,5vw,34px)}h2{font-size:20px;margin-bottom:12px}h3{font-size:16px}
+p{margin:0 0 10px}.muted{color:var(--muted)}.sm{font-size:13px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px;background:var(--soft);color:var(--accent)}
+.btn{font:inherit;font-weight:600;background:var(--accent);color:var(--accent-fg);border:0;border-radius:8px;padding:10px 16px;cursor:pointer}
+.btn.alt{background:var(--soft);color:var(--accent)}
+.hero{display:grid;gap:8px;padding-block:8px 20px}
+.steps{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));margin:0;padding:0;list-style:none}
+.steps li{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px}
+.steps b{display:block;font-family:var(--fd);font-size:14px}.steps span{color:var(--muted);font-size:13px}
+details{border-bottom:1px solid var(--line);padding:10px 0}summary{cursor:pointer;font-weight:600}
+label{display:grid;gap:4px;font-weight:600;font-size:13px}
+input,select,textarea{font:inherit;font-weight:400;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:9px 10px;width:100%}
+.form{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}.full{grid-column:1/-1}
+.err{color:var(--bad);font-size:12px;font-weight:500;min-height:1em}
+.mail{border:1px dashed var(--accent);border-radius:10px;padding:14px;background:var(--soft);white-space:pre-wrap;font-size:14px}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);white-space:nowrap}th{color:var(--muted);font-weight:600}
+.chat{display:grid;gap:10px;max-height:380px;overflow-y:auto;padding:4px}
+.m{padding:9px 12px;border-radius:12px;max-width:88%;white-space:pre-wrap}
+.u{justify-self:end;background:var(--accent);color:var(--accent-fg)}
+.b{background:var(--soft)}.h{background:var(--warn-bg);color:var(--warn);font-weight:600}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.chips button{font:inherit;font-size:13px;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:99px;padding:5px 12px;cursor:pointer}
+.ask{display:flex;gap:8px}.ask input{flex:1;min-width:0}
+.kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:16px}
+.kpi .n{font-family:var(--fd);font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}.kpi .l{font-size:12.5px;color:var(--muted)}
+.row{display:grid;grid-template-columns:130px 1fr 64px;gap:10px;align-items:center;margin:7px 0;font-size:13px}
+.track{background:var(--soft);border-radius:4px;height:16px;overflow:hidden}.fill{background:var(--accent);height:100%;border-radius:4px}
+.fill.w{background:var(--warn)}
+.sc{display:grid;grid-template-columns:90px 1fr 46px;gap:10px;align-items:center;font-size:13px;margin:6px 0}
+.tag{font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:99px}.t-s{background:var(--soft);color:var(--good)}.t-r{background:var(--warn-bg);color:var(--warn)}.t-x{background:var(--line);color:var(--muted)}
+.note{background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:8px 12px;font-size:13px}
+[hidden]{display:none!important}
+@media(max-width:520px){.row{grid-template-columns:96px 1fr 52px}}
+@media(prefers-reduced-motion:no-preference){.fill{transition:width .5s}}
+</style>
+</head>
+<body>
+
+<header><div class="wrap bar"><div class="logo">Hire<b>Smart</b> <span class="muted sm" style="font-weight:500">TalentBridge prototype</span></div>
+<nav role="tablist" id="nav"><button role="tab" data-t="careers" aria-selected="true">Careers</button><button role="tab" data-t="apply">Apply</button><button role="tab" data-t="askhr">Ask HR</button><button role="tab" data-t="dash">Dashboard</button></nav></div></header>
+<main class="wrap">
+
+<section id="careers" data-p>
+<div class="hero"><span class="pill">We are hiring · Bengaluru, Pune, Remote</span><h1>Build your career at TalentBridge Technologies</h1>
+<p class="muted">Six open roles. Every applicant gets an acknowledgement within minutes and a status update within the timelines below.</p></div>
+<h2>Open roles</h2><div class="grid" id="roles"></div>
+<h2 style="margin-top:28px">How hiring works</h2>
+<ol class="steps"><li><b>1. Apply</b><span>Form takes 3 minutes. Email acknowledgement instantly.</span></li><li><b>2. Resume screening</b><span>Target: within 3 working days.</span></li><li><b>3. Interview</b><span>Scheduled within 7 days of screening.</span></li><li><b>4. Feedback</b><span>Shared within 3 working days.</span></li><li><b>5. Offer</b><span>Offer issued within 3 days of final feedback.</span></li><li><b>6. Joining</b><span>Date agreed with you, usually 30 to 60 days after offer.</span></li></ol>
+<h2 style="margin-top:28px">Benefits</h2>
+<div class="grid"><div class="card"><h3>Learning budget</h3><p class="muted sm">Annual allowance for courses and certifications.</p></div><div class="card"><h3>Flexible work</h3><p class="muted sm">Hybrid or remote depending on the role.</p></div><div class="card"><h3>Health cover</h3><p class="muted sm">Medical insurance for you and your family.</p></div><div class="card"><h3>Mentorship</h3><p class="muted sm">A buddy for the first 90 days and monthly check-ins.</p></div></div>
+<h2 style="margin-top:28px">FAQ</h2><div class="card" id="faq"></div>
+</section>
+
+<section id="apply" data-p hidden>
+<h2>Apply for a role</h2>
+<form id="f" class="card form" novalidate>
+<label>Full name<input id="n" autocomplete="name"><span class="err" id="e_n"></span></label>
+<label>Email<input id="em" type="email" autocomplete="email"><span class="err" id="e_em"></span></label>
+<label>Phone<input id="ph" inputmode="tel"><span class="err" id="e_ph"></span></label>
+<label>Role<select id="ro"></select></label>
+<label>Years of experience<input id="ex" type="number" min="0" max="40" value="2"><span class="err" id="e_ex"></span></label>
+<label>How did you hear about us?<select id="so"><option>LinkedIn</option><option>Job Portal</option><option>Career Website</option><option>Employee Referral</option><option>Campus Hiring</option><option>Recruitment Agency</option></select></label>
+<label class="full">Key skills (comma separated)<textarea id="sk" rows="2"></textarea><span class="err" id="e_sk"></span></label>
+<div class="full"><button class="btn" type="submit">Submit application</button> <span class="muted sm">Dummy data only. Nothing leaves your browser.</span></div>
+</form>
+<div id="ack" hidden style="margin-top:18px"><h2>Acknowledgement email (auto-sent)</h2><div class="mail" id="mail"></div></div>
+<h2 style="margin-top:28px">Application sheet (Google Sheets stand-in)</h2>
+<div class="card tw"><table><thead><tr><th>ID</th><th>Submitted</th><th>Name</th><th>Role</th><th>Source</th><th>Exp</th><th>Score</th><th>Status</th></tr></thead><tbody id="sheet"></tbody></table></div>
+<p class="muted sm" style="margin-top:8px">In the live build each submission lands in a Google Sheet through Google Forms, and Apps Script sends the email. This page mimics that flow.</p>
+</section>
+
+<section id="askhr" data-p hidden>
+<h2>Ask HR assistant</h2>
+<div class="card"><div class="chat" id="chat" aria-live="polite"></div>
+<div class="chips" id="chips"></div>
+<form class="ask" id="af"><input id="aq" placeholder="Ask about roles, timelines, process, benefits" aria-label="Your question"><button class="btn">Send</button></form></div>
+<p class="muted sm" style="margin-top:10px">Answers come only from the approved knowledge file. Salary talks, visas, complaints, legal and personal status questions are handed to a human.</p>
+</section>
+
+<section id="dash" data-p hidden>
+<h2>Hiring dashboard</h2>
+<p class="muted sm">Source: TalentBridge 200-candidate synthetic dataset (Jan to Sep 2026 applications). Time-to-hire = offer date minus application date.</p>
+<div class="kpis" id="kpis"></div>
+<div class="grid">
+<div class="card"><h3>Hiring funnel</h3><div id="fun"></div></div>
+<div class="card"><h3>Time-to-hire (days to offer)</h3><div id="hist"></div><p class="sm muted" id="tnote"></p></div>
+<div class="card"><h3>Stage delays (avg days)</h3><div id="stg"></div></div>
+<div class="card"><h3>Offer acceptance by source</h3><div id="src"></div></div>
+</div>
+<h2 style="margin-top:26px">Dummy resume scoring</h2>
+<p class="muted sm">Scores 8 invented candidates against the selected role. Rule: 70% skill match, 30% experience (capped at 5 years). 75+ shortlist, 50 to 74 review, below 50 reject.</p>
+<label style="max-width:300px;margin-bottom:10px">Role<select id="sr"></select></label>
+<div class="card" id="scores"></div>
+<h2 style="margin-top:26px">This session</h2><div class="card" id="live"></div>
+</section>
+</main>
+
+<script>
+const D={"apps": 200, "interviewed": 145, "offers": 83, "accepted": 47, "tth": 28.4, "med": 26.0, "over48": 5, "hist": [["(0, 15]", 6], ["(15, 20]", 14], ["(20, 25]", 15], ["(25, 30]", 18], ["(30, 35]", 13], ["(35, 40]", 5], ["(40, 48]", 7], ["(48, 60]", 5]], "scr": 7.9, "sch": 12.4, "fb": 4.9, "src": [["Campus Hiring", 21, 10, 9, 90.0], ["Career Website", 25, 14, 6, 42.9], ["Employee Referral", 32, 12, 9, 75.0], ["Job Portal", 40, 13, 8, 61.5], ["LinkedIn", 66, 30, 14, 46.7], ["Recruitment Agency", 16, 4, 1, 25.0]], "mon": [["2026-01", 8, 3, 37.5], ["2026-02", 9, 5, 55.6], ["2026-03", 7, 2, 28.6], ["2026-04", 8, 4, 50.0], ["2026-05", 14, 9, 64.3], ["2026-06", 10, 8, 80.0], ["2026-07", 7, 4, 57.1], ["2026-08", 14, 9, 64.3], ["2026-09", 6, 3, 50.0]]};
+const ROLES=[
+{n:'Software Engineer',l:'Bengaluru',t:'Full time',d:'Build and ship services for HR products with a small team.',k:['python','java','sql','git','api','testing']},
+{n:'AI/ML Engineer',l:'Pune',t:'Full time',d:'Train and deploy ranking and matching models.',k:['python','machine learning','nlp','sql','tensorflow','mlops']},
+{n:'Data Analyst',l:'Remote',t:'Full time',d:'Turn hiring and people data into decisions.',k:['sql','excel','power bi','python','statistics','dashboards']},
+{n:'Business Analyst',l:'Bengaluru',t:'Full time',d:'Translate client needs into clear requirements.',k:['requirements','sql','excel','documentation','stakeholder','agile']},
+{n:'Cloud Engineer',l:'Pune',t:'Full time',d:'Run secure, reliable cloud infrastructure.',k:['aws','azure','linux','terraform','docker','networking']},
+{n:'QA Engineer',l:'Remote',t:'Full time',d:'Own test strategy and automation.',k:['selenium','testing','automation','python','api','jira']}];
+const FAQ=[['How long does hiring take?','From application to offer the process averages about 4 weeks. Screening is targeted within 3 working days.'],['Can I apply to more than one role?','Yes, submit one application per role.'],['Do freshers apply?','Yes. Campus and entry level roles are open. Enter 0 years of experience.'],['Will I get a confirmation?','You receive an acknowledgement email right after you submit.']];
+const $=s=>document.querySelector(s);
+const E=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function store(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k)||'null');localStorage.setItem(k,JSON.stringify(v))}catch(e){return null}}
+let mem=[];const getApps=()=>store('hs_apps')||mem;
+function saveApps(a){mem=a;store('hs_apps',a)}
+// tabs
+function show(t){document.querySelectorAll('[data-p]').forEach(s=>s.hidden=s.id!==t);document.querySelectorAll('#nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===t));if(t==='dash')live();if(t==='apply')sheet();window.scrollTo(0,0)}
+$('#nav').onclick=e=>{const b=e.target.closest('button');if(b)show(b.dataset.t)};
+// careers
+$('#roles').innerHTML=ROLES.map((r,i)=>`<div class="card"><span class="pill">${r.t}</span><h3 style="margin:8px 0 4px">${r.n}</h3><p class="muted sm">${r.l}</p><p>${r.d}</p><p class="sm muted">Skills: ${r.k.join(', ')}</p><button class="btn" data-r="${i}">Apply</button></div>`).join('');
+$('#roles').onclick=e=>{const b=e.target.closest('[data-r]');if(b){$('#ro').value=ROLES[b.dataset.r].n;show('apply')}};
+$('#faq').innerHTML=FAQ.map(f=>`<details><summary>${f[0]}</summary><p class="muted" style="margin:8px 0 0">${f[1]}</p></details>`).join('');
+$('#ro').innerHTML=ROLES.map(r=>`<option>${r.n}</option>`).join('');
+$('#sr').innerHTML=ROLES.map(r=>`<option>${r.n}</option>`).join('');
+// scoring
+function score(role,skills,exp){const R=ROLES.find(r=>r.n===role);const s=skills.toLowerCase();const hit=R.k.filter(k=>s.includes(k)).length;return Math.round(hit/R.k.length*70+Math.min(exp,5)/5*30)}
+const verdict=s=>s>=75?['Shortlist','t-s']:s>=50?['Review','t-r']:['Reject','t-x'];
+// apply
+const ids=a=>'HS-'+String(1001+a.length);
+$('#f').onsubmit=e=>{e.preventDefault();const v={n:$('#n').value.trim(),em:$('#em').value.trim(),ph:$('#ph').value.trim(),ex:$('#ex').value,sk:$('#sk').value.trim()};let ok=true;
+const chk=(k,c,m)=>{$('#e_'+k).textContent=c?'':m;if(!c)ok=false};
+chk('n',v.n.length>1,'Enter your full name.');chk('em',/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v.em),'Enter a valid email address.');chk('ph',/^[+\d][\d\s-]{7,14}$/.test(v.ph),'Enter a valid phone number.');chk('ex',v.ex!==''&&+v.ex>=0&&+v.ex<=40,'Enter 0 to 40 years.');chk('sk',v.sk.length>2,'List at least one skill.');
+if(!ok)return;const a=getApps().slice();const role=$('#ro').value;const sc=score(role,v.sk,+v.ex);
+const rec={id:ids(a),at:new Date().toLocaleString('en-IN'),n:v.n,em:v.em,role,src:$('#so').value,ex:+v.ex,sc,st:verdict(sc)[0]};a.push(rec);saveApps(a);
+$('#mail').textContent=`To: ${v.em}\nSubject: We received your application for ${role} (${rec.id})\n\nHi ${v.n},\n\nThanks for applying to TalentBridge Technologies. Your application ${rec.id} is received.\n\nWhat happens next:\n- Resume screening within 3 working days\n- Interview scheduling within 7 days of screening\n- Feedback within 3 working days of your interview\n\nQuestions? Use Ask HR on our careers page.\n\nTalentBridge Talent Team`;
+$('#ack').hidden=false;$('#f').reset();$('#ex').value=2;sheet()};
+function sheet(){const a=getApps();$('#sheet').innerHTML=a.length?a.slice().reverse().map(r=>`<tr><td>${r.id}</td><td>${E(r.at)}</td><td>${E(r.n)}</td><td>${E(r.role)}</td><td>${E(r.src)}</td><td>${r.ex}</td><td>${r.sc}</td><td><span class="tag ${verdict(r.sc)[1]}">${r.st}</span></td></tr>`).join(''):'<tr><td colspan="8" class="muted">No applications yet. Submit the form above.</td></tr>'}
+// Ask HR
+const KB=[
+{k:['role','open','position','job','vacanc','hiring for'],a:'We are hiring for: Software Engineer, AI/ML Engineer, Data Analyst, Business Analyst, Cloud Engineer and QA Engineer. Details are on the Careers tab.'},
+{k:['how long','timeline','how many days','time to hire','duration','how much time'],a:'Typical flow: screening within 3 working days, interview within 7 days of screening, feedback within 3 working days, then an offer. Overall, application to offer averages about 4 weeks.'},
+{k:['process','steps','stages','how to apply','apply'],a:'Steps: 1) Apply through the form, 2) Resume screening, 3) Interview, 4) Feedback, 5) Offer, 6) Joining. Use the Apply tab to start.'},
+{k:['acknowledg','confirmation','received','email'],a:'You get an automatic acknowledgement email with your application ID as soon as you submit.'},
+{k:['benefit','perk','insurance','leave','learning'],a:'Benefits: annual learning budget, flexible hybrid or remote work, medical insurance, and a 90-day mentorship buddy.'},
+{k:['fresher','campus','graduate','entry'],a:'Freshers are welcome. Enter 0 years of experience when you apply.'},
+{k:['location','where','remote','office','bengaluru','pune'],a:'Offices are in Bengaluru and Pune. Data Analyst and QA Engineer roles can be remote.'},
+{k:['document','join','joining','onboard'],a:'After you accept an offer, HR agrees a joining date with you, usually 30 to 60 days later, and shares the document checklist.'},
+{k:['multiple','more than one','another role'],a:'Yes, you can apply to more than one role with a separate application for each.'},
+{k:['skill','requirement','qualification','eligib'],a:'Each role lists its key skills on the Careers tab. Resumes are scored on skills match and experience.'}];
+const HAND=['salary','ctc','negotiat','visa','sponsor','complain','harass','discriminat','legal','lawyer','grievance','refund','reject','why was i','status','background check','medical','disabilit'];
+function msg(c,t){const d=document.createElement('div');d.className='m '+c;d.textContent=t;$('#chat').appendChild(d);$('#chat').scrollTop=1e5}
+function reply(q){const s=q.toLowerCase();let h=HAND.find(w=>s.includes(w));
+if(h){const m=/hs-\d{4}/i.exec(q);if(h==='status'&&m){const r=getApps().find(x=>x.id===m[0].toUpperCase());if(r)return['b',`Application ${r.id} for ${r.role} is received and awaiting resume screening. A recruiter will update you within 3 working days.`]}
+return['h','This needs a person. I have passed your question to the HR team. Expect a reply within 1 working day at hr@talentbridge.example (dummy address). Please do not share ID numbers or bank details in chat.']}
+let best=null,bs=0;KB.forEach(e=>{const n=e.k.filter(k=>s.includes(k)).length;if(n>bs){bs=n;best=e}});
+return best?['b',best.a]:['h','I do not have an approved answer for that, so I am handing you to the HR team at hr@talentbridge.example (dummy address). They reply within 1 working day.']}
+function ask(q){q=q.trim();if(!q)return;msg('u',q);const r=reply(q);setTimeout(()=>msg(r[0],r[1]),150)}
+$('#af').onsubmit=e=>{e.preventDefault();ask($('#aq').value);$('#aq').value=''};
+['What roles are open?','How long does hiring take?','What are the benefits?','What is my application status?','Can we discuss salary?'].forEach(q=>{const b=document.createElement('button');b.type='button';b.textContent=q;b.onclick=()=>ask(q);$('#chips').appendChild(b)});
+msg('b','Hi, I am the HireSmart assistant. Ask me about roles, hiring steps, timelines or benefits.');
+// dashboard
+const bar=(l,v,max,txt,w)=>`<div class="row"><span>${l}</span><div class="track"><div class="fill ${w?'w':''}" style="width:${v/max*100}%"></div></div><span>${txt}</span></div>`;
+$('#kpis').innerHTML=[['Applications',D.apps],['Offers made',D.offers],['Offers accepted',D.accepted],['Avg time-to-hire',D.tth+' d'],['Acceptance rate',(D.accepted/D.offers*100).toFixed(1)+'%']].map(k=>`<div class="card kpi"><div class="n">${k[1]}</div><div class="l">${k[0]}</div></div>`).join('');
+$('#fun').innerHTML=[['Applied',D.apps],['Interviewed',D.interviewed],['Offered',D.offers],['Accepted',D.accepted]].map(r=>bar(r[0],r[1],D.apps,r[1]+' ('+Math.round(r[1]/D.apps*100)+'%)')).join('');
+const hm=Math.max(...D.hist.map(h=>h[1]));
+$('#hist').innerHTML=D.hist.map((h,i)=>bar(h[0].replace('(','').replace(']','').replace(', ','-'),h[1],hm,h[1],i===D.hist.length-1)).join('');
+$('#tnote').textContent=`Mean ${D.tth} days, median ${D.med}. Only ${D.over48} of ${D.offers} offers took longer than the brief's 48-day benchmark (last bar).`;
+$('#stg').innerHTML=[['Screening',D.scr],['Scheduling',D.sch],['Feedback',D.fb]].map(r=>bar(r[0],r[1],14,r[1]+' d')).join('');
+$('#src').innerHTML=D.src.slice().sort((a,b)=>b[4]-a[4]).map(r=>bar(r[0],r[4],100,r[4]+'%')).join('');
+function renderScores(){const role=$('#sr').value;const C=[['Aarav K.','python, sql, git, api, testing',5],['Meera S.','python, machine learning, nlp, tensorflow',3],['Rohan D.','excel, power bi, sql, statistics',2],['Isha P.','aws, linux, docker, terraform',4],['Kabir M.','selenium, automation, jira, api',1],['Nisha R.','requirements, documentation, agile',6],['Dev T.','html, css',0],['Sana L.','sql, python, dashboards, excel',2]];
+$('#scores').innerHTML=C.map(c=>{const s=score(role,c[1],c[2]),v=verdict(s);return `<div class="sc"><span>${c[0]}</span><div class="track"><div class="fill" style="width:${s}%"></div></div><span>${s}</span></div><div class="sm muted" style="margin:-2px 0 6px 100px">${c[1]} · ${c[2]} yr · <span class="tag ${v[1]}">${v[0]}</span></div>`}).join('')}
+$('#sr').onchange=renderScores;renderScores();
+function live(){const a=getApps();$('#live').innerHTML=a.length?`<p><b>${a.length}</b> application(s) submitted in this prototype. Shortlisted: <b>${a.filter(x=>x.st==='Shortlist').length}</b>, review: <b>${a.filter(x=>x.st==='Review').length}</b>, reject: <b>${a.filter(x=>x.st==='Reject').length}</b>.</p>`:'<p class="muted">No applications submitted yet. Submit one on the Apply tab to see it counted here.</p>'}
+sheet();live();
+</script>
+
+</body>
+</html>
