@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HireSmart · TalentBridge prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f7f8;--surface:#fff;--ink:#12232e;--muted:#5b6b75;--line:#d9e2e6;--brand:#0c7c80;--brand-ink:#fff;--accent:#e39a2d;--good:#1d8a52;--warn:#b7791f;--bad:#c0392b;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1a20;--surface:#17252d;--ink:#e8f0f3;--muted:#9bb0ba;--line:#2a3d47;--brand:#33b5b9;--brand-ink:#08181c;--accent:#f0b050;--good:#4cc582;--warn:#e0b04a;--bad:#ee7a6c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1a20;--surface:#17252d;--ink:#e8f0f3;--muted:#9bb0ba;--line:#2a3d47;--brand:#33b5b9;--brand-ink:#08181c;--accent:#f0b050;--good:#4cc582;--warn:#e0b04a;--bad:#ee7a6c;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 Manrope,system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:inherit}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px;padding:10px 16px;overflow-x:auto}
+nav b{font-weight:800;margin-right:auto;white-space:nowrap}nav b i{font-style:normal;color:var(--brand)}
+nav a{text-decoration:none;padding:6px 12px;border-radius:99px;font-weight:500;font-size:14px;white-space:nowrap}
+nav a:hover{background:var(--bg)}
+main{max-width:1040px;margin:0 auto;padding:0 16px 48px}
+section{padding:40px 0 8px}
+h1{font-size:clamp(30px,6vw,52px);line-height:1.08;margin:8px 0 12px;font-weight:800;letter-spacing:-.02em;max-width:18ch}
+h2{font-size:24px;margin:0 0 14px;font-weight:800;letter-spacing:-.01em}
+h3{font-size:16px;margin:0 0 6px}
+.lead{color:var(--muted);max-width:56ch}
+.pill{display:inline-block;background:var(--accent);color:#2a1a00;font-weight:700;font-size:13px;padding:3px 12px;border-radius:99px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.card p{margin:4px 0 0;color:var(--muted);font-size:14px}
+.tag{font-size:12px;color:var(--muted)}
+button,.btn{font:inherit;font-weight:700;background:var(--brand);color:var(--brand-ink);border:0;border-radius:8px;padding:10px 18px;cursor:pointer}
+button.ghost{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:s}
+.steps li{counter-increment:s;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px 12px 52px;position:relative}
+.steps li::before{content:counter(s);position:absolute;left:14px;top:12px;width:26px;height:26px;border-radius:50%;background:var(--brand);color:var(--brand-ink);font-weight:800;display:grid;place-items:center;font-size:13px}
+.steps b{display:block}.steps span{color:var(--muted);font-size:14px}
+details{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-bottom:8px}
+summary{cursor:pointer;font-weight:700}details p{margin:8px 0 0;color:var(--muted)}
+form{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+label{display:grid;gap:4px;font-weight:700;font-size:14px}
+input,select{font:inherit;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);width:100%}
+.full{grid-column:1/-1}
+.note{color:var(--muted);font-size:13px}
+.mail{border-left:4px solid var(--brand);white-space:pre-line;font-size:14px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:560px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:700}
+.chat{height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:12px;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.msg{max-width:85%;padding:8px 12px;border-radius:12px;font-size:14px}
+.me{align-self:flex-end;background:var(--brand);color:var(--brand-ink)}.bot{background:var(--bg);border:1px solid var(--line)}
+.ask{display:flex;gap:8px;margin-top:8px}
+.bars{display:grid;gap:8px}.bar{display:grid;grid-template-columns:110px 1fr 56px;gap:8px;align-items:center;font-size:13px}
+.bar div{height:16px;background:var(--bg);border-radius:4px;overflow:hidden}.bar div i{display:block;height:100%;background:var(--brand);border-radius:4px}
+.bar span:last-child{text-align:right;font-weight:700}
+.s{font-weight:700;padding:2px 10px;border-radius:99px;font-size:12px;color:#fff}
+.shortlist{background:var(--good)}.review{background:var(--warn)}.reject{background:var(--bad)}
+</style>
+</head>
+<body>
+<nav><b>HireSmart <i>TalentBridge</i> prototype</b><a href="#careers">Careers</a><a href="#apply">Apply</a><a href="#ask">Ask HR</a><a href="#dash">Dashboard</a></nav>
+<main>
+<section id="careers">
+<span class="pill">We are hiring · Bengaluru, Pune, Remote</span>
+<h1>Build your career at TalentBridge Technologies</h1>
+<p class="lead">Six open roles. Every applicant gets an acknowledgement within minutes and a status update within the timelines below.</p>
+
+<h2 style="margin-top:28px">Open roles</h2>
+<div class="grid" id="roles"></div>
+
+<h2 style="margin-top:32px">How hiring works</h2>
+<ol class="steps">
+<li><b>Apply</b><span>Form takes 3 minutes. Email acknowledgement instantly.</span></li>
+<li><b>Resume screening</b><span>Target: within 3 working days.</span></li>
+<li><b>Interview</b><span>Scheduled within 7 days of screening.</span></li>
+<li><b>Feedback</b><span>Shared within 3 working days.</span></li>
+<li><b>Offer</b><span>Offer issued within 3 days of final feedback.</span></li>
+<li><b>Joining</b><span>Date agreed with you, usually 30 to 60 days after offer.</span></li>
+</ol>
+
+<h2 style="margin-top:32px">Benefits</h2>
+<div class="grid">
+<div class="card"><h3>Learning budget</h3><p>Annual allowance for courses and certifications.</p></div>
+<div class="card"><h3>Flexible work</h3><p>Hybrid or remote depending on the role.</p></div>
+<div class="card"><h3>Health cover</h3><p>Medical insurance for you and your family.</p></div>
+<div class="card"><h3>Mentorship</h3><p>A buddy for the first 90 days and monthly check-ins.</p></div>
+</div>
+
+<h2 style="margin-top:32px">FAQ</h2>
+<details><summary>How long does screening take?</summary><p>We aim to screen every resume within 3 working days of applying.</p></details>
+<details><summary>Can I apply for more than one role?</summary><p>Yes. Submit one application per role so each team sees your details.</p></details>
+<details><summary>Is remote work available?</summary><p>Hybrid or remote, depending on the role. Each listing says which.</p></details>
+</section>
+
+<section id="apply">
+<h2>Apply for a role</h2>
+<form id="f">
+<label>Full name<input name="name" required></label>
+<label>Email<input name="email" type="email" required></label>
+<label>Phone<input name="phone" type="tel"></label>
+<label>Role<select name="role" id="roleSel"></select></label>
+<label>Years of experience<input name="exp" type="number" min="0" max="40" value="2" required></label>
+<label>How did you hear about us?<select name="src"><option>LinkedIn</option><option>Job Portal</option><option>Career Website</option><option>Employee Referral</option><option>Campus Hiring</option><option>Recruitment Agency</option></select></label>
+<label class="full">Key skills (comma separated)<input name="skills" placeholder="e.g. Python, SQL, Excel"></label>
+<div class="full"><button type="submit">Submit application</button> <span class="note">Dummy data only. Nothing leaves your browser.</span></div>
+</form>
+<h3 style="margin-top:20px">Acknowledgement email (auto-sent)</h3>
+<div class="card mail" id="mail"><span class="note">Submit the form to see the email.</span></div>
+<h3 style="margin-top:20px">Application sheet (Google Sheets stand-in)</h3>
+<div class="card scroll"><table><thead><tr><th>ID</th><th>Submitted</th><th>Name</th><th>Role</th><th>Source</th><th>Exp</th><th>Score</th><th>Status</th></tr></thead><tbody id="sheet"></tbody></table></div>
+<p class="note">In the live build each submission lands in a Google Sheet through Google Forms, and Apps Script sends the email. This page mimics that flow.</p>
+</section>
+
+<section id="ask">
+<h2>Ask HR assistant</h2>
+<div class="chat" id="chat" aria-live="polite"><div class="msg bot">Hi, I can answer questions about hiring timelines, benefits and how to apply.</div></div>
+<form class="ask" id="q" style="display:flex"><input id="qi" placeholder="Ask about timelines, benefits, locations…" aria-label="Your question"><button>Send</button></form>
+<p class="note">Answers come only from the approved knowledge file. Salary talks, visas, complaints, legal and personal status questions are handed to a human.</p>
+</section>
+
+<section id="dash">
+<h2>Hiring dashboard</h2>
+<p class="note">Source: TalentBridge 200-candidate synthetic dataset (Jan to Sep 2026 applications). Time-to-hire = offer date minus application date.</p>
+<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+<div class="card"><h3>Hiring funnel</h3><div class="bars" id="c1"></div></div>
+<div class="card"><h3>Time-to-hire (days to offer)</h3><div class="bars" id="c2"></div></div>
+<div class="card"><h3>Stage delays (avg days)</h3><div class="bars" id="c3"></div></div>
+<div class="card"><h3>Offer acceptance by source</h3><div class="bars" id="c4"></div></div>
+</div>
+
+<h2 style="margin-top:32px">Dummy resume scoring</h2>
+<p class="note">Scores 8 invented candidates against the selected role. Rule: 70% skill match, 30% experience (capped at 5 years). 75+ shortlist, 50 to 74 review, below 50 reject.</p>
+<label style="max-width:320px;margin:10px 0">Role<select id="scoreRole"></select></label>
+<div class="card scroll"><table><thead><tr><th>Candidate</th><th>Skills</th><th>Exp</th><th>Score</th><th>Decision</th></tr></thead><tbody id="scores"></tbody></table></div>
+<h3 style="margin-top:20px">This session</h3>
+<div class="card" id="session"><span class="note">No applications submitted yet.</span></div>
+</section>
+</main>
+
+<script>
+const ROLES=[
+{n:"Frontend Engineer",l:"Bengaluru",m:"Hybrid",s:["react","javascript","css","html","typescript"]},
+{n:"Data Analyst",l:"Pune",m:"Hybrid",s:["sql","excel","python","tableau","statistics"]},
+{n:"Backend Engineer",l:"Bengaluru",m:"Hybrid",s:["java","sql","apis","docker","python"]},
+{n:"HR Business Partner",l:"Pune",m:"On-site",s:["recruitment","onboarding","communication","excel","policy"]},
+{n:"Product Designer",l:"Remote",m:"Remote",s:["figma","research","prototyping","css","design systems"]},
+{n:"QA Engineer",l:"Remote",m:"Remote",s:["selenium","testing","python","apis","sql"]}];
+const CANDS=[
+["Aarav Mehta",["react","javascript","css","sql","java"],4],["Diya Nair",["python","sql","excel","statistics","tableau"],3],
+["Kabir Rao",["java","docker","apis","sql"],6],["Meera Iyer",["recruitment","onboarding","communication"],5],
+["Rohan Das",["figma","research","css"],2],["Sana Khan",["selenium","testing","python","apis"],3],
+["Vikram Joshi",["html","excel"],1],["Isha Kapoor",["typescript","react","css","html","javascript"],5]];
+const $=id=>document.getElementById(id);
+const decide=s=>s>=75?["Shortlist","shortlist"]:s>=50?["Review","review"]:["Reject","reject"];
+function score(skills,exp,role){const req=role.s,m=req.filter(x=>skills.includes(x)).length/req.length;return Math.round(70*m+30*Math.min(exp,5)/5)}
+$("roles").innerHTML=ROLES.map(r=>`<div class="card"><h3>${r.n}</h3><p>${r.l} · ${r.m}</p><p class="tag">Skills: ${r.s.slice(0,3).join(", ")}</p></div>`).join("");
+const opts=ROLES.map((r,i)=>`<option value="${i}">${r.n}</option>`).join("");
+$("roleSel").innerHTML=opts;$("scoreRole").innerHTML=opts;
+function renderScores(){const r=ROLES[$("scoreRole").value];$("scores").innerHTML=CANDS.map(c=>{const s=score(c[1],c[2],r),d=decide(s);return `<tr><td>${c[0]}</td><td>${c[1].join(", ")}</td><td>${c[2]} yrs</td><td><b>${s}</b></td><td><span class="s ${d[1]}">${d[0]}</span></td></tr>`}).join("")}
+$("scoreRole").onchange=renderScores;renderScores();
+function bars(id,rows,suffix=""){const mx=Math.max(...rows.map(r=>r[1]));$(id).innerHTML=rows.map(r=>`<div class="bar"><span>${r[0]}</span><div><i style="width:${r[1]/mx*100}%"></i></div><span>${r[1]}${suffix}</span></div>`).join("")}
+bars("c1",[["Applied",200],["Screened",148],["Interviewed",86],["Offered",34],["Joined",26]]);
+bars("c2",[["0–15 days",4],["16–30 days",11],["31–45 days",12],["46–60 days",5],["60+ days",2]]);
+bars("c3",[["Screening",4.2],["Interview",8.1],["Feedback",3.6],["Offer",3.4]]," d");
+bars("c4",[["Referral",88],["Campus",81],["LinkedIn",76],["Career site",70],["Job portal",62],["Agency",58]],"%");
+const subs=[];
+$("f").onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target)),role=ROLES[d.role],
+sk=d.skills.toLowerCase().split(",").map(x=>x.trim()).filter(Boolean),sc=score(sk,+d.exp,role),dc=decide(sc),
+id="TB-"+String(subs.length+1).padStart(3,"0"),t=new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+subs.push({id,t,name:d.name,role:role.n,src:d.src,exp:d.exp,sc,dc});
+$("mail").textContent=`To: ${d.email}\nSubject: We’ve received your application for ${role.n}\n\nHi ${d.name.split(" ")[0]},\n\nThanks for applying to TalentBridge Technologies. Your reference is ${id}.\nWe aim to finish resume screening within 3 working days and will email you with the outcome.\n\nTalentBridge Talent Team`;
+$("sheet").innerHTML=subs.map(s=>`<tr><td>${s.id}</td><td>${s.t}</td><td>${s.name}</td><td>${s.role}</td><td>${s.src}</td><td>${s.exp}</td><td>${s.sc}</td><td>${s.dc[0]}</td></tr>`).join("");
+$("session").innerHTML=subs.map(s=>`<div>${s.name} · ${s.role} · <b>${s.sc}</b> <span class="s ${s.dc[1]}">${s.dc[0]}</span></div>`).join("");
+e.target.reset()};
+const KB=[
+[/screen|resume/,"We aim to screen every resume within 3 working days."],
+[/interview/,"Interviews are scheduled within 7 days of screening."],
+[/feedback/,"Feedback is shared within 3 working days of your interview."],
+[/offer/,"Offers are issued within 3 days of final feedback."],
+[/join|notice/,"Joining dates are agreed with you, usually 30 to 60 days after the offer."],
+[/benefit|learning|insurance|health|mentor/,"Benefits: a learning budget, flexible work, health cover for you and your family, and a mentor for your first 90 days."],
+[/remote|hybrid|location|bengaluru|pune/,"We hire in Bengaluru, Pune and Remote. Work mode is hybrid or remote, depending on the role."],
+[/apply|application|form/,"The form takes about 3 minutes and you get an acknowledgement email right away."]];
+const HUMAN=/salary|ctc|pay|visa|complain|legal|lawsuit|my status|my application/;
+$("q").onsubmit=e=>{e.preventDefault();const v=$("qi").value.trim();if(!v)return;
+const add=(c,t)=>{const m=document.createElement("div");m.className="msg "+c;m.textContent=t;$("chat").append(m);$("chat").scrollTop=1e9};
+add("me",v);const q=v.toLowerCase();let a;
+if(HUMAN.test(q))a="That needs a person. I’ve passed it to the HR team, who will reply by email.";
+else{const k=KB.find(x=>x[0].test(q));a=k?k[1]:"I can’t find that in the approved knowledge file, so I’ve handed it to a human."}
+setTimeout(()=>add("bot",a),300);$("qi").value=""};
+</script>
+</body>
+</html>
